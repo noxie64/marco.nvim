@@ -7,13 +7,17 @@ import { unlink } from "fs/promises";
 import { fileURLToPath } from "url";
 const FILE = parse(process.argv[process.argv.length - 1]);
 
-console.log(format(FILE));
+
+if (FILE.ext != '.md') {
+    console.error('This file is not a markdown file!');
+    exit(1);
+}
 
 const __dirname =  dirname(fileURLToPath(import.meta.url))
 const TMP_FILE = join(__dirname, FILE.name + ".tmp.html");
 
 if (!existsSync(format(FILE))) {
-    console.log("File", FILE, "doesn't exist!");
+    console.error("File", FILE, "doesn't exist!");
     exit(1);
 }
 
@@ -24,7 +28,7 @@ const md = markdownit({
 
 readFile(format(FILE), 'utf8', (err, data) => {
     console.log(data);
-    
+
     if (err) {
         console.error('Error reading file:', err);
         return;
